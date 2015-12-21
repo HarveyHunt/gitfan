@@ -11,6 +11,7 @@ from github.GithubException import BadCredentialsException
 from github.GithubException import RateLimitExceededException
 from github.GithubException import TwoFactorException
 
+
 def main(args):
     if not args.password:
         args.password = getpass.getpass("Password for {}: ".format(args.username))
@@ -27,36 +28,39 @@ def main(args):
         for repo in user.get_repos():
             clone_repo(repo)
 
-def check_login(g):
+
+def check_login(github):
     try:
-        g.get_user().login
+        github.get_user().login
         return
-    except RateLimitExceededException as e:
-        print('Rate limit exceeded: {}'.format(e))
-    except BadCredentialsException as e:
-        print('Bad credentials: {}'.format(e))
-    except TwoFactorException as e:
-        print('Your account is configured with two factor auth: {}'.format(e))
+    except RateLimitExceededException as exception:
+        print('Rate limit exceeded: {}'.format(exception))
+    except BadCredentialsException as exception:
+        print('Bad credentials: {}'.format(exception))
+    except TwoFactorException as exception:
+        print('Your account is configured with two factor auth: {}'.format(exception))
 
     exit()
+
 
 def clone_repo(repo):
     if not os.path.exists(repo.name):
         subprocess.run(['git', 'clone', repo.clone_url], check=True)
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Download all of a user\'s '
-                                                    'github repositories')
+                                                 'github repositories')
     parser.add_argument('-u', '--username', type=str, help='Your username')
     parser.add_argument('-p', '--password', type=str, help='Your password - '
-                                    'if omitted, you will be prompted')
+                                        'if omitted, you will be prompted')
     parser.add_argument('-d', '--dest', type=str, help='Where to download the '
                                         'repositories to')
     parser.add_argument('-t', '--target', type=str, help='The user to download '
                                         'all repositories from. If ommitted, '
                                         'username is used.')
 
-    if not len(sys.argv) > 1:
+    if len(sys.argv) <= 1:
         parser.print_help()
         exit()
 
