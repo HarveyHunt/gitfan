@@ -32,11 +32,11 @@ def check_login(g):
         g.get_user().login
         return
     except RateLimitExceededException as e:
-        print('Rate limit exceeded: {}', e)
+        print('Rate limit exceeded: {}'.format(e))
     except BadCredentialsException as e:
-        print('Bad credentials: {}', e)
+        print('Bad credentials: {}'.format(e))
     except TwoFactorException as e:
-        print('Your account is configured with two factor auth: {}', e)
+        print('Your account is configured with two factor auth: {}'.format(e))
 
     exit()
 
